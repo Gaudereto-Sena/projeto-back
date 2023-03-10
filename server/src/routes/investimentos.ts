@@ -1,7 +1,9 @@
 import express from 'express'
-import { investimentosController } from '../controllers/investimentosController'
+import { investimentos_controller } from '../controllers/investimentos.controller'
 
-export const investimentos = express()
+export const investimentos = express.Router()
 
-investimentos.get('/', investimentosController.getInvestimentos)
+investimentos.get('/', investimentos_controller.getInvestimentos)
+
+investimentos.get('/consolidados', investimentos_controller.getDadosConsolidados)
 

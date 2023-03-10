@@ -1,15 +1,15 @@
 import express from 'express'
-import { operacaoController } from '../controllers/operacoesController'
+import { operacao_controller } from '../controllers/operacoes.controller'
 
-export const operacao = express()
+export const operacao = express.Router()
 
-operacao.get('/', operacaoController.getOperacoes)
+operacao.get('/', operacao_controller.getOperacoes)
 
-operacao.post('/', operacaoController.postOperacoes)
+operacao.post('/', operacao_controller.postOperacoes)
 
-operacao.patch('/', operacaoController.patchOperacoes)
+operacao.put('/', operacao_controller.putOperacoes)
 
-operacao.delete('/', operacaoController.deletarOperacoes)
+operacao.delete('/', operacao_controller.deletarOperacoes)
 
 
 
