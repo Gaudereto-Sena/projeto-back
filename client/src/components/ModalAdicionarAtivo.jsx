@@ -10,7 +10,7 @@ import TabelaDadosRV from './TabelaDadosRV'
 
 const ModalAdicionarAtivo = () => {
 
-  const { ativos, setAtivos, setCodigo, ativoProcurado, setAtivoProcurado, tiposInvestimento, selecionaListaDeAtivos, } = useBuscaAtivoContext()
+  const { ativos, setAtivos, setCodigo, ativoProcurado, setAtivoProcurado, tiposInvestimento, selecionaListaDeAtivos, setPrecosAtualizados } = useBuscaAtivoContext()
 
   const { tipoDeInvestimentoSelecionado, setTipoDeInvestimentoSelecionado, quantidadeOperada, valorDeOperacao, dataDaOperacao, alternaModal, setOperacoes, setInvestimentos, eVenda, editaOperacaoModal, idOperacao } = useAdicionarOperacaoContext()
 
@@ -83,8 +83,6 @@ const ModalAdicionarAtivo = () => {
     setInvestimentos(dadosDeletarOperacaoJSON.investimentosConsolidados)
     setDeletarOperacao(false)
   }
-
-
 
   useEffect(() => {
 

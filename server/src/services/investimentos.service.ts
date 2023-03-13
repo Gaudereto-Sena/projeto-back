@@ -2,9 +2,6 @@ import fs from 'fs'
 import { v4 as uuidv4 } from 'uuid'
 import { dadosChave, Operacao } from '../types'
 import { escreveJSON } from '../util/util'
-import { conectaAPI } from '../conectaAPI'
-
-
 
 const consolidaOperacoesRV = (operacoes: Operacao[] | undefined, nomeDoAtivo: string, dadosParaDeletar?: dadosChave) => {
 
@@ -107,7 +104,6 @@ const consolidaTodosAtivosDeCadaCategoria = (json: any) => {
         })
     
         escreveJSON(consolidadosJSON, './src/json/consolidado.json')
-        console.log(consolidadosJSON)
 
 }
 

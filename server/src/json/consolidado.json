@@ -1,1 +1,14 @@
-{"rendafixa":{"totalInvestido":0,"numeroDeAtivos":0},"acoes":{"totalInvestido":2000,"numeroDeAtivos":1},"fundosimobiliarios":{"totalInvestido":6585,"numeroDeAtivos":3}}
+{
+  "rendafixa": {
+    "totalInvestido": 0,
+    "numeroDeAtivos": 0
+  },
+  "acoes": {
+    "totalInvestido": 0,
+    "numeroDeAtivos": 0
+  },
+  "fundosimobiliarios": {
+    "totalInvestido": 0,
+    "numeroDeAtivos": 0
+  }
+}

@@ -30,7 +30,7 @@ const ContainerTipos = ({ show, setShow, tipo, keys, nome }) => {
             acoes: precoConsolidados.acoes - dadosConsolidados.acoes?.totalInvestido,
             fundosimobiliarios: precoConsolidados.fundosimobiliarios - dadosConsolidados.fundosimobiliarios?.totalInvestido
         })
-    }, [dadosConsolidados, precoConsolidados, investimentos])
+    }, [dadosConsolidados, precoConsolidados])
 
     return (
         <div
@@ -47,7 +47,7 @@ const ContainerTipos = ({ show, setShow, tipo, keys, nome }) => {
                             <p className='w-2/12 text-center mx-auto'>Investido: R${dadosConsolidados[tipo]?.totalInvestido}</p>
                             <p className='w-2/12 text-center mx-auto'>Atual: R${precoConsolidados[tipo]}</p>
                             {
-                                retorno[tipo] > 0 ?
+                                retorno.acoes > 0 ?
                                     <p className='w-2/12 text-center mx-auto text-verde-300'>Retorno: R${retorno[tipo].toFixed(2)}</p> :
                                     <p className='w-2/12 text-center mx-auto text-vermelho-300'>Retorno: R${retorno[tipo].toFixed(2)}</p>
                             }
@@ -65,7 +65,6 @@ const ContainerTipos = ({ show, setShow, tipo, keys, nome }) => {
                     return (
                         <AtivoIndividual codigo={chave} key={chave} tipo={tipo} />
                     )
-
                 })
             }
         </div>

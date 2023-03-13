@@ -3,7 +3,7 @@ import api from '../api/api'
 import { useBuscaAtivoContext } from '../Contextos/BuscaAcao'
 import { useAdicionarOperacaoContext } from '../Contextos/DadosInvestimentos'
 import Operacoes from './Operacoes'
-import {GoTriangleDown} from 'react-icons/go'
+import { GoTriangleDown } from 'react-icons/go'
 
 
 const AtivoIndividual = ({ codigo, tipo }) => {
@@ -21,16 +21,23 @@ const AtivoIndividual = ({ codigo, tipo }) => {
   }, [investimentos, precoAtivoAtualizado, valorTotalAtual, diferencaTotalAtual, operacoes, precoConsolidados])
 
   useEffect(() => {
+    buscaPrecoAtivo()
+  }, [])
+
+  useEffect(() => {
     setPrecosAtualizados((estadoAnterior) => {
       return {
         ...estadoAnterior,
         [tipo]: {
           ...estadoAnterior[tipo],
-          [codigo]: Number(valorTotalAtual)
+          [codigo]: {
+            valorAtual: Number(valorTotalAtual),
+            porcentagem: porcentagem
+          }
         }
       }
     })
-  }, [valorTotalAtual])
+  }, [valorTotalAtual, porcentagem])
 
   const buscaPrecoAtivo = async () => {
     const resposta = await api.get(`/bolsa/${codigo}`)
@@ -76,7 +83,7 @@ const AtivoIndividual = ({ codigo, tipo }) => {
             <div className='w-3/12'>Total Investido: R${investimentos[tipo][codigo].valorPagoTotal.toFixed(2)}</div>
             <div className='w-3/12'>Total atual: R${valorTotalAtual.toFixed(2)}</div>
             <div className={diferencaTotalAtual > 0 ? 'w-3/12 text-verde-300' : 'w-3/12 text-vermelho-300'}>Lucro/prejuizo: R${diferencaTotalAtual.toFixed(2)}</div>
-            <div className='w-1/12'>%{porcentagem}</div>
+            <div className='w-1/12'>%{precosAtualizados[tipo][codigo]?.porcentagem}</div>
             <GoTriangleDown />
           </div>
           {showOperacoes &&

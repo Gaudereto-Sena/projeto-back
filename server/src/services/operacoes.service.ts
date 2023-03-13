@@ -99,7 +99,6 @@ const funcaoDeletarOperacao = (operacao: Operacao, nomeDoAtivo: string, id: stri
 
     const investimentosConsolidados = investimentos_service.consolidaOperacoesRV(operacoesAtualizadasDoAtivo, nomeDoAtivo, dadosParaDeletar)
 
-
     return investimentosConsolidados
 }
 

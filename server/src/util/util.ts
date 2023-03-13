@@ -10,7 +10,7 @@ const padronizaTipoDaOperacao = (tipo: string) => {
 }
 
 const escreveJSON = (json: any, url: string) => {
-    const jsonString = JSON.stringify(json)
+    const jsonString = JSON.stringify(json, undefined, 2)
     /* Escreve no json a operacao adicionada */
     fs.writeFile(url, jsonString, 'utf-8', (err) => {
         if (err) {
