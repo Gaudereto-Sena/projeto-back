@@ -1,77 +1,84 @@
-import fs from 'fs'
-import { operacao_service } from '../services/operacoes.service'
+import * as operacoes_repositories from '../repositories/operacoes.repositories';
 
+const getOperacoes = async (req: any, res: any) => {
+    const { operacoes, success, numeroOperacoes } = await operacoes_repositories.getTodasOperacoes(req.query)
 
+    res.set({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+    });
+    res.status(200).json({
+        success,
+        data: operacoes,
+        numeroOperacoes
+    })
+}
 
-const getOperacoes = (req: any, res: any) => {
-    const jsonOperacoes = JSON.parse(fs.readFileSync('./src/json/operacoes.json').toString())
+const getOperacoesPorId = async (req: any, res: any) => {
+    const id = Number(req.params.id);
+    const { operacoes, success } = await operacoes_repositories.getOperacoesPorId(id)
+
     res.set({
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
     });
     res.status(200)
     res.json({
-        status: 'sucess',
-        data: jsonOperacoes
+        success,
+        data: operacoes
     })
 }
 
-const postOperacoes = (req: any, res: any) => {
-    const jsonOperacoes = JSON.parse(fs.readFileSync('./src/json/operacoes.json').toString())
-    const investimentosConsolidados = operacao_service.adicionarNovaOperacao(req.body.operacao, req.body.nome)
+const postOperacoes = async (req: any, res: any) => {
+    const { operacaoAdicionada, success, errors } = await operacoes_repositories.createOperacao(req.body)
+
     res.set({
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
     });
-    res.status(201)
-    res.json({
-        status: 'sucess',
-        data: {
-            operacoes: jsonOperacoes,
-            investimentosConsolidados: investimentosConsolidados
-        }
+    res.status(201).json({
+        success,
+        data: operacaoAdicionada,
+        errors
     })
 }
 
-const putOperacoes = (req: any, res: any) => {
-    const jsonOperacoes = JSON.parse(fs.readFileSync('./src/json/operacoes.json').toString())
-    const investimentosConsolidados = operacao_service.editarOperacao(req.body.operacao, req.body.nome, req.body.id)
+const putOperacoes = async (req: any, res: any) => {
+    const { operacaoEditada, success, errors } = await operacoes_repositories.editOperacao(req.body)
     res.set({
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
     });
-    res.status(200)
-    res.json({
-        status: 'sucess',
-        data: {
-            operacoes: jsonOperacoes,
-            investimentosConsolidados: investimentosConsolidados
-        }
+    res.status(200).json({
+        success,
+        data:
+            operacaoEditada,
+        errors
+
     })
 }
 
-const deletarOperacoes = (req: any, res: any) => {
-    const jsonOperacoes = JSON.parse(fs.readFileSync('./src/json/operacoes.json').toString())
-    const investimentosConsolidados = operacao_service.funcaoDeletarOperacao(req.body.operacao, req.body.nome, req.body.id)
+const deletarOperacoes = async (req: any, res: any) => {
+    const idOperacao = req.params.id
+    const { operacaoDeletada, success, ativoDeletadoResponse } = await operacoes_repositories.deleteOperacao(idOperacao)
     res.set({
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
     });
     res.status(200)
     res.json({
-        status: 'sucess',
+        success,
         data: {
-            operacoes: jsonOperacoes,
-            investimentosConsolidados: investimentosConsolidados
+            operacaoDeletada,
+            ativoDeletadoResponse
         }
     })
 }
-
-
 
 export const operacao_controller: any = {
     postOperacoes,
     getOperacoes,
     putOperacoes,
-    deletarOperacoes
+    deletarOperacoes,
+    getOperacoesPorId
 } 

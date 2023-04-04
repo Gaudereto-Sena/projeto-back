@@ -2,60 +2,47 @@ import React, { useEffect, useState } from 'react'
 import ContainerTipos from '../components/ContainerTipos'
 import ModalAdicionarInvestimento from '../components/ModalAdicionarAtivo'
 import { useAdicionarOperacaoContext } from "../Contextos/DadosInvestimentos"
-import api from '../api/api'
 import { useBuscaAtivoContext } from '../Contextos/BuscaAcao'
-import Menu from '../components/Menu'
+import { useAxios } from '../useAxios.js'
 
 
 const Carteira = () => {
-    const { alternaModal, investimentos, setInvestimentos, showModal, operacoes } = useAdicionarOperacaoContext()
-    const { precosAtualizados, precoConsolidados, setPrecosConsolidados } = useBuscaAtivoContext()
-    const [keysAcao, setKeysAcao] = useState([])
-    const [keysFII, setkeysFII] = useState([])
+    const { alternaModal, showModal } = useAdicionarOperacaoContext()
+    const { dadosNovos, usuario } = useBuscaAtivoContext()
+
+
+    const [{ data: dadosConsolidados }, getDadosConsolidados] = useAxios(
+        {
+            url: "/investimentos/consolidados",
+            method: "get",
+        },
+        {
+            manual: true,
+        }
+    )
+
     const [showAcoes, setShowAcoes] = useState(false)
     const [showFIIs, setShowFIIs] = useState(false)
 
-    useEffect(() => {
-        const getDadosInvestimentos = async () => {
-            const getDadosInvestimento = await api.get('/investimentos')
-            const dadosInvestimentoJson = getDadosInvestimento.data.data
-            setInvestimentos(dadosInvestimentoJson)
-        }
-        getDadosInvestimentos()
-    }, [])
+    const fetch = () => {
+        getDadosConsolidados({
+            params: { idUser: usuario.id }
+        })
+    }
 
     useEffect(() => {
-        setKeysAcao(Object.keys(investimentos.acoes))
-        setkeysFII(Object.keys(investimentos.fundosimobiliarios))
-        console.log({
-            keysFII,
-            keysAcao
-        })
-        setPrecosConsolidados(() => {
-            const acoes = keysAcao.reduce((acc, key) => {
-                return acc + Number(precosAtualizados.acoes[key]?.valorAtual)
-            }, 0)
-            const fundosImobiliarios = keysFII.reduce((acc, key) => {
-                return acc + Number(precosAtualizados.fundosimobiliarios[key]?.valorAtual)
-            }, 0)
-
-            return {
-                acoes: acoes.toFixed(2),
-                fundosimobiliarios: fundosImobiliarios.toFixed(2),
-            }
-        })
-    }, [investimentos, precosAtualizados, operacoes])
+        fetch()
+    }, [dadosNovos])
 
     return (
         <>
-            <Menu />
-            {showModal && <ModalAdicionarInvestimento />}
+            {showModal && <ModalAdicionarInvestimento fetch={fetch} />}
 
 
             <div className='flex flex-col bg-gray-100 relative h-full min-h-full mt-24'>
 
                 <h1 className='text-center text-5xl mb-8 uppercase text-azul-600'>Investimentos</h1>
-                <div className='mx-auto w-3/4'>
+                <div className='mx-auto w-11/12 xl:w-3/4'>
 
                     <div
                         className='w-full p-6 my-4 bg-azul-200 text-white rounded-3xl'
@@ -68,8 +55,27 @@ const Carteira = () => {
 
                     </div>
 
-                    <ContainerTipos show={showAcoes} setShow={setShowAcoes} tipo='acoes' keys={keysAcao} nome='Ações' />
-                    <ContainerTipos show={showFIIs} setShow={setShowFIIs} tipo='fundosimobiliarios' keys={keysFII} nome='Fundos Imobiliarios' />
+
+                    {dadosConsolidados &&
+                        dadosConsolidados?.data.consolidado.map(dadosConsolidados => {
+                            if (dadosConsolidados.tipo === 'acoes') {
+                                return (
+                                    <ContainerTipos dados={dadosConsolidados} show={showAcoes} setShow={setShowAcoes} tipo='acoes' nome='Ações' key={dadosConsolidados.tipo} />
+                                )
+                            }
+
+
+                            if (dadosConsolidados.tipo === 'fundosimobiliarios') {
+                                return (
+                                    <ContainerTipos dados={dadosConsolidados} show={showFIIs} setShow={setShowFIIs} tipo='fundosimobiliarios' nome='Fundos Imobiliarios' key={dadosConsolidados.tipo} />
+                                )
+                            }
+
+                        }
+                        )}
+
+
+
 
                     <button
                         className='fixed right-6 bottom-6 rounded-[100%] bg-azul-600 text-white w-24 h-24 text-3xl'

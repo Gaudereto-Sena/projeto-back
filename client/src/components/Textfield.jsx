@@ -1,14 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 
-const Textfield = ({ id, label, type, required, funcaoOnChange, value, placeholder, estiloInline, step, min, disabled }) => {
+const Textfield = ({ id, label, type, required, funcaoOnChange, value, placeholder, estiloInline, step, min, disabled, classStyle, containerStyle }) => {
     return (
-        <div className='py-2 relative' style={estiloInline}>
-            <label 
-                className='block mb-2 text-center'
-                htmlFor={id}>{label}</label>
+        <div className={`relative ${containerStyle} mb-3`} style={estiloInline}>
+            {label &&
+                <label
+                    className='block mb-2 text-center'
+                    htmlFor={id}>{label}
+                </label>}
             <input
-                className='bg-white shadow-xl w-full rounded-lg text-base p-3 box-border text-black'
+                className={`bg-white shadow-xl w-full rounded-lg text-base p-3 box-border text-black ${classStyle}`}
                 id={id}
                 type={type}
                 required={required}
@@ -18,7 +20,7 @@ const Textfield = ({ id, label, type, required, funcaoOnChange, value, placehold
                 disabled={disabled}
                 step={step}
                 min={min}
-                />
+            />
         </div>
     )
 }
@@ -39,7 +41,7 @@ Textfield.propTypes = {
 
 Textfield.defaultProps = {
     id: "email",
-    label: "Email",
+    label: undefined,
     type: "email",
     required: true,
     funcaoOnChange: null,

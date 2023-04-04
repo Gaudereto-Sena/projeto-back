@@ -1,0 +1,1 @@
+delete from operacoes where id_operacao = ?

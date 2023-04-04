@@ -1,0 +1,16 @@
+put http://localhost:8080/operacoes
+Content-Type: application/json
+
+{
+    "codigo": "mxrf11",
+    "tipo": "acoes",
+    "quantidade": 100,
+    "precoDaOperacao": 30,
+    "dataDaOperacao": "2023-02-07 09:45:00",
+    "tipoOperacao": "venda",
+    "nome": "maxi rendaFixa",
+   "idOperacao": 8
+   
+}
+
+

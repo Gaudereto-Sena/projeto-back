@@ -1,3 +1,2 @@
-get http://localhost:8080/investimentos
-Content-Type: application/json
-
+get http://localhost:8080/operacoes?idUser=1
+Content-Type: application/json 

@@ -1,5 +1,12 @@
 import fs from 'fs'
 
+/* enum TIPO_ATIVO_ENUM {
+    ACOES = 'Ações',
+    FUNDO_IMOBILIARIO = 'Fundo Imobiliário'
+   }
+
+TIPO_ATIVO_ENUM.ACOES */
+
 const padronizaTipoDaOperacao = (tipo: string) => {
     if (tipo === 'Ações') {
         tipo = 'Acoes'

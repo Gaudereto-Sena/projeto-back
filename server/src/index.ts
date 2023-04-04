@@ -1,15 +1,18 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from 'express'
-import { operacao } from './routes/operacoes'
+import { operacoes } from './routes/operacoes'
 import { bolsa } from './routes/bolsa'
 import cors from 'cors'
 import { investimentos } from './routes/investimentos'
+
 
 
 const app = express()
 app.use(express.json())
 app.use(cors())
 
-app.use('/operacoes', operacao)
+app.use('/operacoes', operacoes)
 app.use('/bolsa', bolsa)
 app.use('/investimentos', investimentos)
 

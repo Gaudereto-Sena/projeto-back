@@ -1,20 +1,54 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import api from '../api/api'
 import { useBuscaAtivoContext } from '../Contextos/BuscaAcao'
 import { useAdicionarOperacaoContext } from '../Contextos/DadosInvestimentos'
 import DataList from './DataList'
 import FormAdicionarAtivoRV from './FormAdicionarAtivoRV'
 import Select from './Select'
 import TabelaDadosRV from './TabelaDadosRV'
+import { useAxios } from '../useAxios.js'
+import { operacaoSchema } from '../operacaoSchema.ts'
+import ErrorMessage from './ErrorMessage'
+import toast from "react-simple-toasts";
 
 
-const ModalAdicionarAtivo = () => {
+const ModalAdicionarAtivo = ({ fetch }) => {
 
-  const { ativos, setAtivos, setCodigo, ativoProcurado, setAtivoProcurado, tiposInvestimento, selecionaListaDeAtivos, setPrecosAtualizados } = useBuscaAtivoContext()
+  const { ativos, setAtivos, setCodigo, ativoProcurado, setAtivoProcurado, tiposInvestimento, selecionaListaDeAtivos, usuario } = useBuscaAtivoContext()
 
-  const { tipoDeInvestimentoSelecionado, setTipoDeInvestimentoSelecionado, quantidadeOperada, valorDeOperacao, dataDaOperacao, alternaModal, setOperacoes, setInvestimentos, eVenda, editaOperacaoModal, idOperacao } = useAdicionarOperacaoContext()
+  const { tipoDeInvestimentoSelecionado, setTipoDeInvestimentoSelecionado, quantidadeOperada, valorDeOperacao, dataDaOperacao, alternaModal, tipoOperacao, editaOperacaoModal, idOperacao, callbackOperacao } = useAdicionarOperacaoContext()
 
-  const [deletarOperacao, setDeletarOperacao] = useState(false)
+  const [isDeleteOperacao, setIsDeleteOperacao] = useState(false)
+  const [validate, setValidate] = useState({})
+
+  const [, adicionaOperacao] = useAxios(
+    {
+      url: `/operacoes/`,
+      method: "post",
+    },
+    {
+      manual: true,
+    }
+  )
+
+  const [, editarOperacao] = useAxios(
+    {
+      url: `/operacoes/`,
+      method: "put",
+    },
+    {
+      manual: true,
+    }
+  )
+
+  const [, deletarOperacao] = useAxios(
+    {
+      url: `/operacoes/${idOperacao}`,
+      method: "delete",
+    },
+    {
+      manual: true,
+    }
+  )
 
   const selecionaTipoDeInvestimento = (tipo) => {
     setTipoDeInvestimentoSelecionado(tipo)
@@ -30,58 +64,69 @@ const ModalAdicionarAtivo = () => {
   const submitOperacao = async (evento) => {
     evento.preventDefault()
 
+    const dadosForm = {
+      codigo: ativoProcurado.symbol,
+      tipo: tipoDeInvestimentoSelecionado,
+      quantidade: Number(quantidadeOperada),
+      precoDaOperacao: Number(valorDeOperacao),
+      dataDaOperacao: dataDaOperacao,
+      tipoOperacao: tipoOperacao,
+    }
+
+    const validation = operacaoSchema.safeParse(dadosForm)
+    setValidate(validation)
+
     const dados = {
-      operacao: {
-        codigo: ativoProcurado.symbol,
-        tipo: tipoDeInvestimentoSelecionado,
-        quantidade: Number(quantidadeOperada),
-        precoDaOperacao: Number(valorDeOperacao),
-        dataDaOperacao: dataDaOperacao,
-        venda: eVenda
-      },
-      nome: ativoProcurado.shortName
+      ...dadosForm,
+      nome: ativoProcurado.shortName,
+      idOperacao,
+      idUser: usuario.id
     }
 
-    if (editaOperacaoModal) {
-      if (deletarOperacao) {
-        submitDeletarOperacao(dados, idOperacao)
+    if (validation.success) {
+      if (editaOperacaoModal) {
+        if (isDeleteOperacao) {
+          await deletarOperacao()
+          setIsDeleteOperacao(false)
+          setTimeout(() => {
+            toast('Operação deletada com sucesso')
+          }, 500)
+
+        } else {
+          console.log('teste edit')
+          await editarOperacao({
+            data: dados
+          })
+          setTimeout(() => {
+            toast('Operação editada com sucesso')
+          }, 500)
+
+        }
       } else {
-        submitEditarOperacao(dados, idOperacao)
+        await adicionaOperacao({
+          data: dados
+        })
+        setTimeout(() => {
+          toast('Operação adicionada com sucesso')
+        }, 500)
+
       }
+
+      if (callbackOperacao?.callback) {
+        await callbackOperacao.callback()
+      }
+
+      fetch()
+
+      setTimeout(() => {
+        alternaModal()
+      }, 500)
+
+
     } else {
-      submitAdicionarAtivo(dados)
+      toast('Falha na requisição')
     }
 
-    alternaModal()
-  }
-
-  const submitAdicionarAtivo = async (dados) => {
-    const postDadosOperacao = await api.post('/operacoes', dados)
-    const dadosOperacaoJSON = await postDadosOperacao.data.data
-    console.log(dadosOperacaoJSON)
-    setOperacoes(dadosOperacaoJSON.operacoes)
-    setInvestimentos(dadosOperacaoJSON.investimentosConsolidados)
-  }
-
-  const submitEditarOperacao = async (dados, id) => {
-    dados.id = id
-    const patchDadosOperacao = await api.put('/operacoes', dados)
-    const dadosEditaOperacaoJSON = await patchDadosOperacao.data.data
-
-    setOperacoes(dadosEditaOperacaoJSON.operacoes)
-    setInvestimentos(dadosEditaOperacaoJSON.investimentosConsolidados)
-  }
-
-  const submitDeletarOperacao = async (dados, id) => {
-    dados.id = id
-    const deletarDadosOperacao = await api.delete('/operacoes', {
-      data: dados
-    })
-    const dadosDeletarOperacaoJSON = await deletarDadosOperacao.data.data
-
-    setOperacoes(dadosDeletarOperacaoJSON.operacoes)
-    setInvestimentos(dadosDeletarOperacaoJSON.investimentosConsolidados)
-    setDeletarOperacao(false)
   }
 
   useEffect(() => {
@@ -94,7 +139,7 @@ const ModalAdicionarAtivo = () => {
   return (
     <div className='w-full h-full bg-black/60 fixed flex justify-center items-center left-0 top-0 z-20'>
       <div className='w-full h-full absolute z-0' onClick={alternaModal}>
-        
+
       </div>
       <div className='w-full min-h-[720px] max-w-3xl bg-azul-400 absolute z-10 rounded-3xl p-12 flex flex-col text-white'>
         <div className='w-full self-end text-center'>
@@ -105,14 +150,15 @@ const ModalAdicionarAtivo = () => {
 
           <label htmlFor='select_tipo_investimento'>Selecione o tipo de ativo:</label>
           <Select id='select_tipo_investimento' options={tiposInvestimento} onChange={selecionaTipoDeInvestimento} value={tipoDeInvestimentoSelecionado} disabled={editaOperacaoModal} />
+          <ErrorMessage validation={validate} name='tipo' />
 
           {tipoDeInvestimentoSelecionado === 'Fundos Imobiliarios' || tipoDeInvestimentoSelecionado === 'Ações' ?
             <>
               <DataList options={ativos.map((ativo) => (ativo.stock))} disabled={editaOperacaoModal} />
-
+              <ErrorMessage validation={validate} name='codigo' />
               {ativoProcurado &&
                 <>
-                  <FormAdicionarAtivoRV />
+                  <FormAdicionarAtivoRV validate={validate} />
                   <TabelaDadosRV />
                   {
                     !editaOperacaoModal &&
@@ -132,7 +178,7 @@ const ModalAdicionarAtivo = () => {
                       </button>
                       <button
                         className='w-2/5 mt-6 bg-amarelo-300 text-black cursor-pointer text-lg py-3 px-8 rounded-lg'
-                        onClick={() => setDeletarOperacao(true)}>
+                        onClick={() => setIsDeleteOperacao(true)}>
                         Deletar
                       </button>
                     </div>

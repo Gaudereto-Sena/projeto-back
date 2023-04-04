@@ -19,10 +19,11 @@ function InvestimentosProvider({ children }) {
     const [valorDeOperacao, setValorDeOperacao] = useState()
     const [dataDaOperacao, setDataDaOperacao] = useState(undefined)
     const [showModal, setShowModal] = useState(false);
-    const [eVenda, setEVenda] = useState(false);
+    const [tipoOperacao, setTipoOperacao] = useState('');
     const [editaOperacaoModal, setEditaOperacaoModal] = useState(false)
     const [selectVenda, setSelectVenda] = useState('compra')
-    const [idOperacao, setIdOperacao] = useState('')
+    const [idOperacao, setIdOperacao] = useState(0)
+    const [callbackOperacao, setCallbackOperacao] = useState(null)
 
     const [investimentos, setInvestimentos] = useState({
         rendafixa: {},
@@ -32,14 +33,14 @@ function InvestimentosProvider({ children }) {
 
     return (
         <InvestimentosContext.Provider
-            value={{ operacoes, setOperacoes, tipoDeInvestimentoSelecionado, setTipoDeInvestimentoSelecionado, quantidadeOperada, setQuantidadeOperada, valorDeOperacao, setValorDeOperacao, dataDaOperacao, setDataDaOperacao, showModal, setShowModal, investimentos, setInvestimentos, eVenda, setEVenda, editaOperacaoModal, setEditaOperacaoModal, selectVenda, setSelectVenda, idOperacao, setIdOperacao }}>
+            value={{ operacoes, setOperacoes, tipoDeInvestimentoSelecionado, setTipoDeInvestimentoSelecionado, quantidadeOperada, setQuantidadeOperada, valorDeOperacao, setValorDeOperacao, dataDaOperacao, setDataDaOperacao, showModal, setShowModal, investimentos, setInvestimentos, tipoOperacao, setTipoOperacao, editaOperacaoModal, setEditaOperacaoModal, selectVenda, setSelectVenda, idOperacao, setIdOperacao, callbackOperacao, setCallbackOperacao }}>
             {children}
         </InvestimentosContext.Provider>
     )
 }
 
 export function useAdicionarOperacaoContext() {
-    const { operacoes, setOperacoes, tipoDeInvestimentoSelecionado, setTipoDeInvestimentoSelecionado, quantidadeOperada, setQuantidadeOperada, valorDeOperacao, setValorDeOperacao, dataDaOperacao, setDataDaOperacao, showModal, setShowModal, investimentos, setInvestimentos, eVenda, setEVenda, editaOperacaoModal, setEditaOperacaoModal, selectVenda, setSelectVenda, idOperacao, setIdOperacao } = useContext(InvestimentosContext)
+    const { operacoes, setOperacoes, tipoDeInvestimentoSelecionado, setTipoDeInvestimentoSelecionado, quantidadeOperada, setQuantidadeOperada, valorDeOperacao, setValorDeOperacao, dataDaOperacao, setDataDaOperacao, showModal, setShowModal, investimentos, setInvestimentos, tipoOperacao, setTipoOperacao, editaOperacaoModal, setEditaOperacaoModal, selectVenda, setSelectVenda, idOperacao, setIdOperacao, callbackOperacao, setCallbackOperacao } = useContext(InvestimentosContext)
 
     const alternaModal = () => {
         resetaValoresDoForm()
@@ -69,15 +70,17 @@ export function useAdicionarOperacaoContext() {
         setDataDaOperacao,
         showModal,
         setShowModal,
-        eVenda, 
-        setEVenda,
+        tipoOperacao,
+        setTipoOperacao,
         editaOperacaoModal,
         setEditaOperacaoModal,
-        selectVenda, 
+        selectVenda,
         setSelectVenda,
-        idOperacao, 
+        idOperacao,
         setIdOperacao,
-        alternaModal
+        alternaModal,
+        callbackOperacao,
+        setCallbackOperacao
     }
 }
 

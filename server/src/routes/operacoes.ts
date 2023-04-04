@@ -1,15 +1,17 @@
 import express from 'express'
 import { operacao_controller } from '../controllers/operacoes.controller'
 
-export const operacao = express.Router()
+export const operacoes = express.Router()
 
-operacao.get('/', operacao_controller.getOperacoes)
+operacoes.get('/', operacao_controller.getOperacoes)
 
-operacao.post('/', operacao_controller.postOperacoes)
+operacoes.get('/:id', operacao_controller.getOperacoesPorId)
 
-operacao.put('/', operacao_controller.putOperacoes)
+operacoes.post('/', operacao_controller.postOperacoes)
 
-operacao.delete('/', operacao_controller.deletarOperacoes)
+operacoes.put('/', operacao_controller.putOperacoes)
+
+operacoes.delete('/:id', operacao_controller.deletarOperacoes)
 
 
 

@@ -4,7 +4,7 @@ import { useBuscaAtivoContext } from '../Contextos/BuscaAcao'
 import { useAdicionarOperacaoContext } from '../Contextos/DadosInvestimentos'
 
 const DataList = ({ options, disabled }) => {
-    const { setAtivoProcurado, codigo, setCodigo, ativoProcurado, buscaAtivo } = useBuscaAtivoContext()
+    const {codigo, setCodigo, buscaAtivo } = useBuscaAtivoContext()
 
     const mudarValor = async (valor) => {
         setCodigo(valor)

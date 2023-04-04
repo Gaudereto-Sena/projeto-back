@@ -7,13 +7,14 @@ BuscaAtivoContext.displayName = 'Buscar Ação'
 export default function BuscaAtivoProvider({ children }) {
     const [ativos, setAtivos] = useState([]);
     const [codigo, setCodigo] = useState('');
+    const [dadosNovos, setDadosNovos] = useState(true)
     const [ativoProcurado, setAtivoProcurado] = useState(null);
-    const [precosAtualizados, setPrecosAtualizados] = useState({
-        'rendafixa': 0,
-        'fundosimobiliarios': 0,
-        'acoes': 0
+    const [precosAtualizados, setPrecosAtualizados] = useState([])
+    const [usuario, setUsuario] = useState({
+        username: 'gustavo',
+        id: 1
     })
-    const [precoConsolidados, setPrecosConsolidados] = useState({
+    const [precosConsolidados, setPrecosConsolidados] = useState({
         acoes: 0,
         fundosimobiliarios: 0,
     })
@@ -25,14 +26,14 @@ export default function BuscaAtivoProvider({ children }) {
 
     return (
         <BuscaAtivoContext.Provider
-            value={{ codigo, setCodigo, ativoProcurado, setAtivoProcurado, tiposInvestimento, ativos, setAtivos, precosAtualizados, setPrecosAtualizados, precoConsolidados, setPrecosConsolidados }}>
+            value={{ codigo, setCodigo, ativoProcurado, setAtivoProcurado, tiposInvestimento, ativos, setAtivos, precosAtualizados, setPrecosAtualizados, precosConsolidados, setPrecosConsolidados, dadosNovos, setDadosNovos, usuario, setUsuario }}>
             {children}
         </BuscaAtivoContext.Provider>
     )
 }
 
 export function useBuscaAtivoContext() {
-    const { codigo, setCodigo, ativoProcurado, setAtivoProcurado, tiposInvestimento, ativos, setAtivos, precosAtualizados, setPrecosAtualizados, precoConsolidados, setPrecosConsolidados } = useContext(BuscaAtivoContext)
+    const { codigo, setCodigo, ativoProcurado, setAtivoProcurado, tiposInvestimento, ativos, setAtivos, precosAtualizados, setPrecosAtualizados, precosConsolidados, setPrecosConsolidados, dadosNovos, setDadosNovos, usuario, setUsuario } = useContext(BuscaAtivoContext)
 
     const buscaAtivo = async (codigoAtivo) => {
         const resposta = await api.get(`/bolsa/${codigoAtivo}`)
@@ -58,7 +59,7 @@ export function useBuscaAtivoContext() {
 
     }
 
-    const selecionaListaDeAtivos = async (tipos, acoes, fundosImobiliarios) => {
+    const selecionaListaDeAtivos = async (tipos) => {
 
         switch (tipos) {
             case 'Ações': {
@@ -95,9 +96,13 @@ export function useBuscaAtivoContext() {
         buscaAtivo,
         transformaTipoEmTexto,
         selecionaListaDeAtivos,
-        precosAtualizados, 
+        precosAtualizados,
         setPrecosAtualizados,
-        precoConsolidados, 
-        setPrecosConsolidados
+        precosConsolidados,
+        setPrecosConsolidados,
+        dadosNovos,
+        setDadosNovos,
+        usuario,
+        setUsuario
     }
 }

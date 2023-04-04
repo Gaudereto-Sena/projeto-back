@@ -1,36 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import { useBuscaAtivoContext } from '../Contextos/BuscaAcao'
-import { useAdicionarOperacaoContext } from '../Contextos/DadosInvestimentos'
-import api from '../api/api'
 import AtivoIndividual from './AtivoIndividual'
-import {GoTriangleDown} from 'react-icons/go'
+import { GoTriangleDown } from 'react-icons/go'
+import { useAxios } from '../useAxios.js'
+import { useAdicionarOperacaoContext } from '../Contextos/DadosInvestimentos'
 
-const ContainerTipos = ({ show, setShow, tipo, keys, nome }) => {
-    const {precoConsolidados} = useBuscaAtivoContext()
-    const {investimentos } = useAdicionarOperacaoContext()
-    const [dadosConsolidados, setDadosConsolidados] = useState({})
-    const [retorno, setRetorno] = useState({
-        'rendafixa': 0,
-        'fundosimobiliarios': 0,
-        'acoes': 0
-    })
+const ContainerTipos = ({ show, setShow, tipo, nome, dados }) => {
+    const { usuario } = useBuscaAtivoContext()
 
-    useEffect(() => {
-        const getDadosConsolidados = async () => {
-            const getDadosConsolidados = await api.get('/investimentos/consolidados')
-            const getDadosConsolidadosJson = getDadosConsolidados.data.data
-            setDadosConsolidados(getDadosConsolidadosJson)
-        }
 
-        getDadosConsolidados()
-    }, [investimentos])
-
-    useEffect(() => {
-        setRetorno({
-            acoes: precoConsolidados.acoes - dadosConsolidados.acoes?.totalInvestido,
-            fundosimobiliarios: precoConsolidados.fundosimobiliarios - dadosConsolidados.fundosimobiliarios?.totalInvestido
+    const [{ data: ativos }, getAtivosPorTipo] = useAxios(
+        {
+            url: `/investimentos/${tipo}`,
+            method: "get",
+        },
+        {
+            manual: true,
         })
-    }, [dadosConsolidados, precoConsolidados, investimentos])
+
+
+    useEffect(() => {
+        getAtivosPorTipo({
+            params: { idUser: usuario.id }
+        })
+    }, [show, dados])
 
     return (
         <div
@@ -42,28 +35,26 @@ const ContainerTipos = ({ show, setShow, tipo, keys, nome }) => {
             >
                 <div className='flex font-bold items-center'>
                     <h3 className='w-2/12'>{nome}</h3>
-                    {show &&
-                        <>
-                            <p className='w-2/12 text-center mx-auto'>Investido: R${dadosConsolidados[tipo]?.totalInvestido}</p>
-                            <p className='w-2/12 text-center mx-auto'>Atual: R${precoConsolidados[tipo]}</p>
-                            {
-                                retorno[tipo] > 0 ?
-                                    <p className='w-2/12 text-center mx-auto text-verde-300'>Retorno: R${retorno[tipo].toFixed(2)}</p> :
-                                    <p className='w-2/12 text-center mx-auto text-vermelho-300'>Retorno: R${retorno[tipo].toFixed(2)}</p>
-                            }
-                        </>
+
+                    <p className='w-2/12 text-center mx-auto'>Investido: R${dados.total_investido}</p>
+                    <p className='w-2/12 text-center mx-auto'>Atual: R${ativos?.totalAtual}</p>
+                    {
+                        ativos?.retorno > 0 ?
+                            <p className='w-2/12 text-center mx-auto text-verde-300'>Retorno: R${ativos?.retorno}</p> :
+                            <p className='w-2/12 text-center mx-auto text-vermelho-300'>Retorno: R${ativos?.retorno}</p>
                     }
-                    <p className='w-2/12 text-center ml-auto'>Numero de ativos: {dadosConsolidados[tipo]?.numeroDeAtivos}</p>
+
+                    <p className='w-2/12 text-center ml-auto'>Numero de ativos: {dados.quantidade_ativos}</p>
 
                     <GoTriangleDown />
                 </div>
             </div>
 
             {show &&
-                keys.length > 0 &&
-                keys.map(chave => {
+                ativos?.data.length > 0 &&
+                ativos?.data.map(ativo => {
                     return (
-                        <AtivoIndividual codigo={chave} key={chave} tipo={tipo} />
+                        <AtivoIndividual codigo={ativo.codigo_ativo} key={ativo.codigo_ativo} tipo={ativo.tipo} ativo={ativo} ativos={ativos} />
                     )
 
                 })

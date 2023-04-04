@@ -1,0 +1,1 @@
+UPDATE operacoes set quantidade=?, valor=?, data_operacao=?, tipo_operacao=? where id_operacao=?

@@ -1,5 +1,58 @@
 {
   "rendafixa": {},
   "acoes": {},
-  "fundosimobiliarios": {}
+  "fundosimobiliarios": {
+    "MXRF11": {
+      "id": "fe63f512-2b0a-47fc-90e9-8198b9f9a621",
+      "nome": "FII MAXI RENCI",
+      "codigo": "MXRF11",
+      "tipo": "fundosimobiliarios",
+      "quantidadeTotal": 150,
+      "valorPagoTotal": 1425,
+      "precoMedio": 9.5,
+      "operacoes": [
+        {
+          "id": "76dcc01e-2fe3-45ee-92e7-487107a3c27d",
+          "codigo": "MXRF11",
+          "tipo": "fundosimobiliarios",
+          "quantidade": 100,
+          "precoDaOperacao": 10,
+          "valorTotalDaOperacao": 1000,
+          "dataDaOperacao": "2023-03-01",
+          "venda": false
+        },
+        {
+          "id": "18692c35-b73c-456a-8b72-e9163e9bcfff",
+          "codigo": "MXRF11",
+          "tipo": "fundosimobiliarios",
+          "quantidade": 50,
+          "precoDaOperacao": 8.5,
+          "valorTotalDaOperacao": 425,
+          "dataDaOperacao": "2023-03-21",
+          "venda": false
+        }
+      ]
+    },
+    "IRDM11": {
+      "id": "333af6ae-a4ab-4ecd-84c8-164473de93b1",
+      "nome": "FII IRIDIUM CI  ER",
+      "codigo": "IRDM11",
+      "tipo": "fundosimobiliarios",
+      "quantidadeTotal": 15,
+      "valorPagoTotal": 1245,
+      "precoMedio": 83,
+      "operacoes": [
+        {
+          "id": "264ce583-3d91-4864-891c-acf5790c5156",
+          "codigo": "IRDM11",
+          "tipo": "fundosimobiliarios",
+          "quantidade": 15,
+          "precoDaOperacao": 83,
+          "valorTotalDaOperacao": 1245,
+          "dataDaOperacao": "2023-02-28",
+          "venda": false
+        }
+      ]
+    }
+  }
 }

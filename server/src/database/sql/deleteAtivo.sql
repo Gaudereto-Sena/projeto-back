@@ -1,0 +1,1 @@
+delete from ativos_user where id_ativo = ?
