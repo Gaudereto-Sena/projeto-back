@@ -14,6 +14,8 @@ const paramsIniciais = {
 
 const CarteiraSimplificada = () => {
     const { usuario } = useBuscaAtivoContext()
+    const [numeroPaginas, setNumeroPaginas] = useState(1)
+    const [paginaAtual, setPaginaAtual] = useState(1)
     const [operacoesParams, setOperacoesParams] = useState(
         {
             ...paramsIniciais,
@@ -36,6 +38,7 @@ const CarteiraSimplificada = () => {
             ...operacoesParams,
             offset: operacoesParams.offset - operacoesParams.limit
         })
+        setPaginaAtual(paginaAtual - 1)
     }
 
     const nextList = () => {
@@ -43,23 +46,23 @@ const CarteiraSimplificada = () => {
             ...operacoesParams,
             offset: operacoesParams.offset + operacoesParams.limit
         })
+        setPaginaAtual(paginaAtual + 1)
     }
 
     useEffect(() => {
         getOperacoes({
             params: operacoesParams
         })
-    }, [])
 
-    useEffect(() => {
-        getOperacoes({
-            params: operacoesParams
-        })
+        const paginas = operacoes ? Math.ceil(Number(operacoes.numeroOperacoes) / operacoesParams.limit) : 1
+        setNumeroPaginas(paginas)
     }, [operacoesParams])
 
     return (
         <div className='flex flex-col bg-gray-100 relative h-full min-h-full mt-24 mx-auto w-full md:max-w-[80%]'>
-            <Textfield
+            <div className='flex gap-3'>
+                <Textfield
+                containerStyle='w-1/2 my-3'
                 type="text"
                 placeholder="Pesquisar"
                 value={operacoesParams.search}
@@ -72,6 +75,9 @@ const CarteiraSimplificada = () => {
             />
 
             <Select
+                estiloInline={{
+                    width: '50%'
+                }}
                 id='ordem_exibicao'
                 options={['Mais recentes', 'Mais antigas']}
                 onChange={(e) => setOperacoesParams({
@@ -79,6 +85,8 @@ const CarteiraSimplificada = () => {
                     direction: e === 'Mais recentes' ? 'desc' : 'asc'
                 })}
             />
+            </div>
+            
             <table>
                 <tr>
                     <th>Data da operação</th>
@@ -105,12 +113,16 @@ const CarteiraSimplificada = () => {
                 }
             </table>
             <div className='flex justify-around py-10'>
+
                 <button
                     disabled={operacoesParams.offset === 0 ? true : false}
                     onClick={() => previousList()}
                     className='bg-azul-400 disabled:bg-azul-200 px-4 py-2 rounded-2xl text-white cursor-pointer'>
                     Anterior
                 </button>
+                <div>
+                    <p>{paginaAtual}/{numeroPaginas}</p>
+                </div>
                 <button
                     disabled={operacoesParams.offset + operacoesParams.limit < operacoes?.numeroOperacoes ? false : true}
 

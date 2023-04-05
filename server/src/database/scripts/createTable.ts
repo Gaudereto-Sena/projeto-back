@@ -6,9 +6,11 @@ import { configuracao } from "../connectionConfig";
 
 async function createTables() {
   const createTablesSql = await requireSQL("createTables.sql");
+  const insertInicialSql = await requireSQL("insertInicial.sql")
   const connection = await mysql.createConnection(configuracao);
 
   await connection.query(createTablesSql);
+  await connection.query(insertInicialSql);
   console.log("As tabelas foram criadas com sucesso!");
   connection.destroy();
 }

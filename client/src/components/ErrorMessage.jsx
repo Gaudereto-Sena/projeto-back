@@ -9,7 +9,6 @@ const ErrorMessage = ({ validation, name }) => {
 
         validation.error &&
         validation.error.issues.map((e) => {
-            console.log(e)
             if (e.path.some(e => e === name)) {
                 return (
                     <div key={name}>
