@@ -19,7 +19,7 @@ function InvestimentosProvider({ children }) {
     const [valorDeOperacao, setValorDeOperacao] = useState()
     const [dataDaOperacao, setDataDaOperacao] = useState(undefined)
     const [showModal, setShowModal] = useState(false);
-    const [tipoOperacao, setTipoOperacao] = useState('');
+    const [tipoOperacao, setTipoOperacao] = useState('compra');
     const [editaOperacaoModal, setEditaOperacaoModal] = useState(false)
     const [selectVenda, setSelectVenda] = useState('compra')
     const [idOperacao, setIdOperacao] = useState(0)
@@ -52,6 +52,7 @@ export function useAdicionarOperacaoContext() {
         setTipoDeInvestimentoSelecionado('')
         setQuantidadeOperada(0)
         setValorDeOperacao(0)
+        setTipoOperacao('compra')
         setDataDaOperacao(undefined)
     }
 

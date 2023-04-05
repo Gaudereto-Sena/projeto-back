@@ -5,7 +5,7 @@ import Select from './Select'
 import ErrorMessage from './ErrorMessage'
 
 function FormAdicionarAtivoRV({ validate }) {
-    const { quantidadeOperada, setQuantidadeOperada, valorDeOperacao, setValorDeOperacao, dataDaOperacao, setDataDaOperacao, setEVenda, selectVenda, setSelectVenda, tipoOperacao, setTipoOperacao } = useAdicionarOperacaoContext()
+    const { quantidadeOperada, setQuantidadeOperada, valorDeOperacao, setValorDeOperacao, dataDaOperacao, setDataDaOperacao, tipoOperacao, setTipoOperacao } = useAdicionarOperacaoContext()
 
     return (
         <>

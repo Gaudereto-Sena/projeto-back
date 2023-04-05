@@ -99,8 +99,9 @@ const CarteiraSimplificada = () => {
                 {
                     operacoes &&
                     operacoes?.data?.map((ativo) => {
+                        console.log(ativo)
                         return (
-                            <tr className='text-center'>
+                            <tr className='text-center' key={`${ativo.codigo_ativo}_${ativo.id_operacao}`}>
                                 <td>{(new Date(ativo.data_operacao)).toLocaleDateString()}</td>
                                 <td>{ativo.codigo_ativo}</td>
                                 <td>{ativo.tipo_operacao}</td>
